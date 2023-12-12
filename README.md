@@ -33,6 +33,25 @@ To remove the created Docker images and volumes that data is persisted to use th
 docker-compose down --remove-orphans --volumes --rmi all
 ```
 
+### Windows Docker Compose Debugging:
+
+Some issues have been reported with running this example on Windows. There two culprits. 
+
+1. Make sure that the scripts in the folder intidb are in *nix format with only LF and not the default Windows CRFL. You can remedy this by using dos2unix command line program or most editors will allow for the translation.
+
+2. Next issue is the pathing issues with how Windows resolves them. Recommended work around is to use Windows Subsystem for Linux (WSL) to run the docker-compose command and to change the `./initdb` entry in the `db` container specification for volumes in the`docker-compose.yml` file to the fully pathed WSL folder name.  See example below:
+
+```yaml
+    volumes:
+      # anything in initdb directory is created in the database
+      # see "How to extend this image" section at https://hub.docker.com/r/_/postgres/
+      - "/mnt/c/Users/MyUserName/MyDirectory/postgrest-docker-compose/initdb:/docker-entrypoint-initdb.d"
+      #- "./initdb:/docker-entrypoint-initdb.d"
+      - local_pgdata:/var/lib/postgresql/data
+```
+
+Try the above two solutions together if you get a cannot load initd log message in the db container or invalid format error in the db container log messages.
+
 ## Demo Application
 
 [Test out the web application that is driven by the PostgREST API calls](http://localhost) This is served from the Nginx server Postgres-demo (using port 80) in the docker-compose file to serve up a simple web application that uses the rest calls.
