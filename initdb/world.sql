@@ -42,6 +42,11 @@ CREATE TABLE countrylanguage (
     percentage real NOT NULL
 );
 
+CREATE VIEW v_usa_city as
+    SELECT city.id, city.name, city.countrycode, city.district, city.population
+    FROM city
+    WHERE city.countrycode = 'USA';
+
 COPY city (id, name, countrycode, district, population) FROM stdin;
 1	Kabul	AFG	Kabol	1780000
 2	Qandahar	AFG	Qandahar	237500
